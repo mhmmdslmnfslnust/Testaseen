@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Alignment Test - Sonnet 3.7</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cognitive Alignment Test</h1>
+            <p class="disclaimer">For self-reflection and exploration only. Not a professional psychological tool.</p>
+        </header>
+
+        <div id="intro-screen" class="screen">
+            <h2>Discover Your Cognitive Style</h2>
+            <p>This test helps you understand how you process information and make decisions. Compare your results with others to find compatibility in thinking styles.</p>
+            <div class="dimensions">
+                <div class="dimension">
+                    <h3>Processing Speed</h3>
+                    <p>Deep Thinkers vs. Fast Processors</p>
+                </div>
+                <div class="dimension">
+                    <h3>Abstraction Level</h3>
+                    <p>Abstract vs. Sensory Thinkers</p>
+                </div>
+                <div class="dimension">
+                    <h3>Pattern Focus</h3>
+                    <p>Pattern Seekers vs. Detail Trackers</p>
+                </div>
+                <div class="dimension">
+                    <h3>Communication Style</h3>
+                    <p>Reflective vs. Expressive Communicators</p>
+                </div>
+            </div>
+            <button id="start-test">Start Test</button>
+        </div>
+
+        <div id="quiz-screen" class="screen hidden">
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <h2 id="question-text"></h2>
+            <div class="options">
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="scale-options">
+                    <button class="option-btn" data-value="1">1</button>
+                    <button class="option-btn" data-value="2">2</button>
+                    <button class="option-btn" data-value="3">3</button>
+                    <button class="option-btn" data-value="4">4</button>
+                    <button class="option-btn" data-value="5">5</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-screen" class="screen hidden">
+            <h2>Your Cognitive Profile</h2>
+            <div class="results-container">
+                <div class="chart-container">
+                    <canvas id="results-chart"></canvas>
+                </div>
+                <div class="results-interpretation">
+                    <h3>Your Thinking Style</h3>
+                    <div id="primary-style"></div>
+                    <div id="dimension-descriptions"></div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="save-results">Save My Results</button>
+                <button id="compare-results">Compare With Someone</button>
+                <button id="retake-test">Take Test Again</button>
+            </div>
+        </div>
+
+        <div id="comparison-screen" class="screen hidden">
+            <h2>Compatibility Comparison</h2>
+            <div class="comparison-container">
+                <div class="chart-container">
+                    <canvas id="comparison-chart"></canvas>
+                </div>
+                <div class="compatibility-score">
+                    <h3>Overall Compatibility</h3>
+                    <div id="compatibility-percentage"></div>
+                    <div id="compatibility-interpretation"></div>
+                </div>
+            </div>
+            <button id="back-to-results">Back to My Results</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 Sonnet 3.7 Test Hub. Created for personal insight and reflection.</p>
+        <p>This test is not a substitute for professional advice.</p>
+    </footer>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
