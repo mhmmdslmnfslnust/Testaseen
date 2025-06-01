@@ -1,5 +1,7 @@
 import Chart from 'chart.js/auto';
 
+// Chart handling utilities
+
 // Store chart instances for cleanup
 const chartInstances = {};
 

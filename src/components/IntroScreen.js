@@ -15,9 +15,9 @@ class IntroScreen {
       <p>This test helps you understand how you process information and make decisions. Compare your results with others to find compatibility in thinking styles.</p>
       
       <div class="dimensions">
-        ${cognitiveTest.dimensions.map(dim => `
+        ${cognitiveTest.axes.map(dim => `
           <div class="dimension">
-            <h3>${dim.name}</h3>
+            <h3>${dim.label}</h3>
             <p>${dim.low} vs. ${dim.high}</p>
           </div>
         `).join('')}

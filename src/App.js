@@ -1,9 +1,10 @@
 import IntroScreen from './components/IntroScreen.js';
+import TestSelectionScreen from './components/TestSelectionScreen.js';
 import QuizScreen from './components/QuizScreen.js';
 import ResultsScreen from './components/ResultsScreen.js';
 import ComparisonScreen from './components/ComparisonScreen.js';
 import { createFooter } from './components/Footer.js';
-import { cognitiveTest } from './data/questions.js';
+import { allTests } from './data/questions.js';
 import StorageService from './services/StorageService.js';
 
 class App {
@@ -11,6 +12,7 @@ class App {
     this.currentScreen = null;
     this.appElement = document.getElementById('app');
     this.state = {
+      currentTest: null,
       currentQuestionIndex: 0,
       answers: [],
       results: null,
@@ -20,6 +22,7 @@ class App {
     // Initialize components
     this.components = {
       intro: new IntroScreen(this),
+      testSelection: new TestSelectionScreen(this),
       quiz: new QuizScreen(this),
       results: new ResultsScreen(this),
       comparison: new ComparisonScreen(this)
@@ -32,6 +35,7 @@ class App {
     
     // Bind methods to maintain context
     this.navigateTo = this.navigateTo.bind(this);
+    this.selectTest = this.selectTest.bind(this);
     this.handleAnswer = this.handleAnswer.bind(this);
     this.calculateResults = this.calculateResults.bind(this);
     this.generateComparisonData = this.generateComparisonData.bind(this);
@@ -45,7 +49,7 @@ class App {
     const header = document.createElement('header');
     header.classList.add('app-header');
     header.innerHTML = `
-      <h1>Cognitive Alignment Test</h1>
+      <h1>Sonnet 3.7 Compatibility Tests</h1>
       <p class="disclaimer">For self-reflection and exploration only. Not a professional psychological tool.</p>
     `;
     this.appElement.appendChild(header);
@@ -59,7 +63,7 @@ class App {
     this.appElement.appendChild(createFooter());
     
     // Navigate to intro screen
-    this.navigateTo('intro');
+    this.navigateTo('testSelection');
   }
   
   navigateTo(screenName) {
@@ -80,6 +84,22 @@ class App {
     component.render(main);
   }
   
+  selectTest(testId) {
+    // Find the selected test by ID
+    const selectedTest = allTests.find(test => test.id === testId);
+    
+    if (!selectedTest) {
+      console.error(`Test with ID "${testId}" not found!`);
+      return;
+    }
+    
+    // Set the current test
+    this.state.currentTest = selectedTest;
+    
+    // Start the test
+    this.startTest();
+  }
+  
   startTest() {
     this.state.currentQuestionIndex = 0;
     this.state.answers = [];
@@ -88,20 +108,22 @@ class App {
   }
   
   handleAnswer(value) {
-    const question = cognitiveTest.questions[this.state.currentQuestionIndex];
+    const currentTest = this.state.currentTest;
+    const question = currentTest.questions[this.state.currentQuestionIndex];
     
     // Store the answer
     this.state.answers.push({
       questionIndex: this.state.currentQuestionIndex,
-      dimension: question.dimension,
+      axis: question.axis,
       direction: question.direction,
+      type: question.type, // For tests like Life Values Sync that need type
       value: value
     });
     
     // Move to next question or show results
     this.state.currentQuestionIndex++;
     
-    if (this.state.currentQuestionIndex < cognitiveTest.questions.length) {
+    if (this.state.currentQuestionIndex < currentTest.questions.length) {
       // Update the quiz screen
       this.components.quiz.updateQuestion();
     } else {
@@ -112,55 +134,55 @@ class App {
   }
   
   calculateResults() {
-    // Initialize scores for each dimension
-    const dimensionScores = {};
-    cognitiveTest.dimensions.forEach(dim => {
-      dimensionScores[dim.id] = {
-        totalPoints: 0,
-        questionCount: 0,
-        score: 0
-      };
-    });
+    const currentTest = this.state.currentTest;
     
-    // Calculate raw scores
-    this.state.answers.forEach(answer => {
-      const dimension = answer.dimension;
-      const value = answer.direction === 'high' ? answer.value : (6 - answer.value); // Reverse score if direction is low
-      
-      dimensionScores[dimension].totalPoints += value;
-      dimensionScores[dimension].questionCount++;
-    });
-    
-    // Calculate normalized scores (0-100 scale)
-    for (const dim in dimensionScores) {
-      const avg = dimensionScores[dim].totalPoints / dimensionScores[dim].questionCount;
-      dimensionScores[dim].score = ((avg - 1) / 4) * 100; // Convert 1-5 scale to 0-100
-    }
-    
-    this.state.results = dimensionScores;
+    // Use the test's scoring function
+    this.state.results = currentTest.scoring.compute.call(currentTest, this.state.answers);
   }
   
   saveResults() {
-    return this.services.storage.saveResults(this.state.results);
+    const currentTest = this.state.currentTest;
+    
+    return this.services.storage.saveResults({
+      test: currentTest.id,
+      title: currentTest.title,
+      timestamp: new Date().toISOString(),
+      results: this.state.results
+    });
   }
   
   generateComparisonData() {
+    const currentTest = this.state.currentTest;
+    const results = this.state.results;
     const otherPersonResults = {};
     
-    cognitiveTest.dimensions.forEach(dim => {
-      // Generate a score that's somewhat different but not totally random
-      const currentScore = this.state.results[dim.id].score;
-      let variance = Math.random() * 50 - 25; // -25 to +25 variance
-      
-      // Limit to 0-100 range
-      let newScore = currentScore + variance;
-      if (newScore < 0) newScore = 0;
-      if (newScore > 100) newScore = 100;
-      
-      otherPersonResults[dim.id] = {
-        score: newScore
-      };
-    });
+    if (currentTest.id === "cognitive-alignment" || currentTest.id === "conflict-style-match") {
+      // For cognitive and conflict tests
+      currentTest.axes.forEach(dim => {
+        // Generate a score that's somewhat different but not totally random
+        const currentScore = results[dim.id];
+        const variance = Math.random() * 2 - 1; // -1 to +1 variance
+        
+        // Limit to 1-5 range (same as our scale)
+        let newScore = currentScore + variance;
+        if (newScore < 1) newScore = 1;
+        if (newScore > 5) newScore = 5;
+        
+        otherPersonResults[dim.id] = newScore;
+      });
+    } else if (currentTest.id === "life-values-sync") {
+      // For life values test which has priority and self scores
+      Object.keys(results).forEach(axisId => {
+        otherPersonResults[axisId] = {
+          priority: Math.min(5, Math.max(1, results[axisId].priority + (Math.random() * 2 - 1))),
+          self: Math.min(5, Math.max(1, results[axisId].self + (Math.random() * 2 - 1)))
+        };
+      });
+    } else {
+      // Generic handler for other test types
+      console.log("Generating comparison data for test:", currentTest.id);
+      // Create mock comparison data based on test structure
+    }
     
     this.state.comparisonData = otherPersonResults;
     return otherPersonResults;

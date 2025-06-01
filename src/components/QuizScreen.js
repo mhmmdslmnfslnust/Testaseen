@@ -1,4 +1,3 @@
-import { cognitiveTest } from '../data/questions.js';
 import '../styles/components/quiz.css';
 
 class QuizScreen {
@@ -8,16 +7,20 @@ class QuizScreen {
   
   render(container) {
     this.container = container;
+    const currentTest = this.app.state.currentTest;
     
     const quizScreen = document.createElement('div');
     quizScreen.classList.add('screen', 'quiz-screen');
     
     quizScreen.innerHTML = `
-      <div class="progress-container">
-        <div id="progress-bar" class="progress-bar"></div>
+      <div class="quiz-header">
+        <h2>${currentTest.title}</h2>
+        <div class="progress-container">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
       </div>
       
-      <h2 id="question-text" class="question-text"></h2>
+      <h3 id="question-text" class="question-text"></h3>
       
       <div class="options-container">
         <div class="scale-labels">
@@ -49,7 +52,8 @@ class QuizScreen {
   }
   
   updateQuestion() {
-    const question = cognitiveTest.questions[this.app.state.currentQuestionIndex];
+    const currentTest = this.app.state.currentTest;
+    const question = currentTest.questions[this.app.state.currentQuestionIndex];
     const questionText = document.getElementById('question-text');
     const progressBar = document.getElementById('progress-bar');
     
@@ -57,7 +61,7 @@ class QuizScreen {
     questionText.textContent = question.text;
     
     // Update progress bar
-    const progress = (this.app.state.currentQuestionIndex / cognitiveTest.questions.length) * 100;
+    const progress = (this.app.state.currentQuestionIndex / currentTest.questions.length) * 100;
     progressBar.style.width = `${progress}%`;
     
     // Reset button selection
