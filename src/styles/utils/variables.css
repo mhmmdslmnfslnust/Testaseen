@@ -1,0 +1,23 @@
+:root {
+  /* Color Palette */
+  --primary-color: #4a6fa5;
+  --secondary-color: #166088;
+  --accent-color: #4dccbd;
+  --light-color: #f5f9ff;
+  --dark-color: #333;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  
+  /* Layout */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --container-width: 1000px;
+  
+  /* Typography */
+  --text-color: #333;
+  --bg-color: #f5f9ff;
+  
+  /* Transitions */
+  --transition-speed: 0.2s;
+}

@@ -1,0 +1,74 @@
+/* Quiz Screen Styles */
+.quiz-screen {
+  text-align: center;
+}
+
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  width: 0;
+  transition: width 0.3s ease-out;
+}
+
+.question-text {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.options-container {
+  margin-top: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.scale-options {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.option-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  background-color: white;
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.option-btn:hover {
+  transform: scale(1.1);
+  background-color: var(--light-color);
+}
+
+.option-btn.selected {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}
